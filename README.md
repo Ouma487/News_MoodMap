@@ -54,8 +54,7 @@ The **Global News MoodMap** solves this by:
 
 ![Global News MoodMap Demo](demo.gif)   
 
-[🎥 Watch full demo video](https://your-link-here.com)  
-*(Link will be added later)*
+[🎥 Watch full demo video](https://www.canva.com/design/DAGymdkwLwE/K6uiGf9TzxSieBn-nE6MDA/watch?utm_content=DAGymdkwLwE&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h15c90d49dd)  
 
 
 ---
