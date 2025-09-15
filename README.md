@@ -19,58 +19,57 @@ The **Global News MoodMap** solves this by:
 
 ## 🛠️ Workflow  
 
-### 1. Ingest GDELT data  
-- `gdelt_events_raw`: GDELT 2.0 events (60 days).  
-- `gdelt_events_enriched`: joined with GKG → adds themes, people, orgs.  
+The pipeline is split into modular scripts:  
 
-### 2. Aggregate daily country docs  
-- `daily_country_topics`: one row per `(country, day)` with headline count, tone, top events, and a compact `topic_doc`.  
+- **`gcp_utils.py`** → init Vertex AI + BigQuery.  
+- **`ingestion.py`** → ingest + enrich GDELT events.  
+- **`processing.py`** → build daily country topics, embeddings, vector search fns, top entities.  
+- **`analytics.py`** → analog search, briefings, sentiment scoring.  
+- **`visualization.py`** → interactive MoodMap with Plotly.  
+- **`pipeline.py`** → main entrypoint orchestrating all steps.  
 
-### 3. Semantic embeddings + search  
-- `news_embeddings`: Gemini embeddings for each topic doc.  
-- `fn_similar_to_text(query)` → search by meaning (*“wildfires Spain”* for example).  
-- `fn_similar_to_day(country, day)` → retrieve historical analogs.  
+### Dataflow  
 
-### 4. AI-generated briefings  
-- `daily_briefings`: structured summaries with 4 sections:  
-  - *What happened*  
-  - *Key drivers*  
-  - *Impact*  
-  - *What to watch next*  
-- Enriched with **historical analogs**.  
+1. **Ingest GDELT data**  
+   - `gdelt_events_raw`: GDELT 2.0 events (60 days).  
+   - `gdelt_events_enriched`: joined with GKG → adds themes, people, orgs.  
 
-### 5. Mood scoring + visualization  
-- `daily_moodmap`: combines AI sentiment + GDELT tone.  
-- Interactive **Plotly choropleth** with hover summaries.  
+2. **Aggregate daily country docs**  
+   - `daily_country_topics`: one row per `(country, day)` with headline count, tone, top events, and a compact `topic_doc`.  
+
+3. **Semantic embeddings + search**  
+   - `news_embeddings`: Gemini embeddings for each topic doc.  
+   - `fn_similar_to_text(query)` → search by meaning.  
+   - `fn_similar_to_day(country, day)` → retrieve historical analogs.  
+
+4. **AI-generated briefings**  
+   - `daily_briefings`: structured summaries with 4 sections: *What happened, Key drivers, Impact, Watch next*.  
+   - Enriched with **historical analogs**.  
+
+5. **Mood scoring + visualization**  
+   - `daily_moodmap`: combines AI sentiment + GDELT tone.  
+   - Interactive **Plotly choropleth** with hover summaries.  
 
 ---
-
-## 📊 Demo Highlights  
-- 🌍 **Interactive MoodMap** → countries colored by mood (😡 → 😃).  
-- 🔎 **Semantic search** → find related events without keywords.  
-- ⏳ **Historical analogs** → discover similar past situations.  
 
 ## 📊 Demo  
 
-![Global News MoodMap Demo](demo.gif)   
+![Global News MoodMap Demo](demo.gif)  
 
 [🎥 Watch full demo video](https://vimeo.com/1118333984?share=copy)  
 
+---
+
+## ⚖️ Notes  
+- For cost efficiency, AI briefings + moodmap were generated only for the **latest day (top N countries)**.  
+- Pipeline generalizes to multiple days with the same queries.  
+- This was my **first hands-on project with BigQuery AI** → the goal was to learn fast while building something impactful.  
 
 ---
-## ⚖️ Notes
-- For cost efficiency, AI briefings + moodmap were generated only for the latest day (top N countries).
-- Pipeline generalizes to multiple days with the same queries.
-- This was my first hands-on project with BigQuery AI, the goal was to learn fast while building something impactful.
----
-## 📌 Next Steps
 
-1. Extend to 14–30 days → richer temporal trends.
-
-2. Scrape article URLs → enrich summaries with snippets.
-
-3. Add regional & sector views.
-
-4. Real-time dashboard (Streamlit / Looker).
-
-5. Automated alerts for sharp sentiment shifts.
+## 📌 Next Steps  
+1. Extend to 14–30 days → richer temporal trends.  
+2. Scrape article URLs → enrich summaries with snippets.  
+3. Add regional & sector views.  
+4. Real-time dashboard (Streamlit / Looker).  
+5. Automated alerts for sharp sentiment shifts.  
